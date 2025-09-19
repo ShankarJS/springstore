@@ -1,0 +1,9 @@
+app:
+  jwt:
+    secret: change-this-super-secret-key-please
+    expiration-ms: 86400000   # 24 hours
+
+spring:
+  security:
+    filter:
+      dispatch: true
