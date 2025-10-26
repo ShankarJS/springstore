@@ -38,6 +38,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                     UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
+                    System.out.println("========= JWT AUTH DEBUG =========");
+                    System.out.println("Username: " + username);
+                    System.out.println("Authorities: " + userDetails.getAuthorities());
+                    System.out.println("Request URI: " + request.getRequestURI());
+                    System.out.println("==================================");
+
                     var auth = new UsernamePasswordAuthenticationToken(
                             userDetails, null, userDetails.getAuthorities());
                     auth.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));

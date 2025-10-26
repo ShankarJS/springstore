@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  springstore-backend:
+    build: .
+    container_name: springstore-app
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+    depends_on:
+      - mysql
+    networks:
+      - springstore-network
+
+  mysql:
+    image: mysql:8
+    container_name: springstore-db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: springstore
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+    networks:
+      - springstore-network
+
+volumes:
+  mysql-data:
+
+networks:
+  springstore-network:
+    driver: bridge

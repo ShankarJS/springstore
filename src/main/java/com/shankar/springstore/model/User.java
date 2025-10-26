@@ -1,5 +1,6 @@
 package com.shankar.springstore.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 //import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Email;
@@ -31,13 +32,10 @@ public class User {
 
     @NotBlank(message = "Password is required")
     @Column(nullable=false)
+    @JsonIgnore
     private String password;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Role role;
-
-
-
-
 }

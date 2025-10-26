@@ -8,6 +8,13 @@ Springstore is a full-featured **shopping backend application** built using **Sp
 It supports **user registration/login**, **product management**, **cart & orders**, and **admin features** — all through secure REST APIs.
 
 ---
+Completion status:
+- Weekend 2 done
+
+Gaps/To learn again:
+- Hibernate, OnetoMany, ManyToOne
+- 
+---
 
 ## 🧱 Tech Stack
 
@@ -29,146 +36,190 @@ It supports **user registration/login**, **product management**, **cart & orders
 ```bash
 git clone https://github.com/ShankarJS/springstore.git
 cd springstore
+```
+
 2️⃣ Configure the database
 Update your credentials in src/main/resources/application.properties:
-
-properties
-Copy code
+```properties
 spring.datasource.url=jdbc:postgresql://localhost:5432/springstore
 spring.datasource.username=postgres
 spring.datasource.password=your_password
 spring.jpa.hibernate.ddl-auto=update
 spring.jpa.show-sql=true
+```
+
 3️⃣ Run the application
-bash
-Copy code
+```bash
 mvn spring-boot:run
+```
+
 Open Swagger UI:
 
-bash
-Copy code
+```bash
 http://localhost:8080/swagger-ui.html
-🗓️ Project Roadmap (Weekend Plan)
-🧩 Weekend 1 – Setup & Authentication
- Create Spring Boot project (Maven + Java 17 + PostgreSQL)
+```
 
- Add dependencies: Web, JPA, PostgreSQL, Security, Validation, Lombok
+---
+🗓️ Project Roadmap (Weekend Plan) 
 
- Configure database and application properties
+🧩 Weekend 1 – Setup & Authentication  
 
- Create User Entity and Repository
+- Create Spring Boot project (Maven + Java 17 + PostgreSQL)
+- Add dependencies: Web, JPA, PostgreSQL, Security, Validation, Lombok
+- Configure database and application properties
+- Create User Entity and Repository
+- Implement JWT Authentication (JwtUtil, JwtAuthFilter, SecurityConfig)
+- Build AuthController with /register and /login
+- Add /api/users/me secured endpoint
+- Integrate Swagger for API testing
 
- Implement JWT Authentication (JwtUtil, JwtAuthFilter, SecurityConfig)
+🧩 BASE URL
+If running locally:
+http://localhost:8080
 
- Build AuthController with /register and /login
+🧠 Weekend 1 APIs — Authentication Module
+1️⃣ Register a New User
+Endpoint:
+POST /api/auth/register
+Headers:
+Content-Type: application/json
+Body (raw → JSON):
+```json
+{
+"name": "Alice",
+"email": "alice@example.com",
+"password": "password123"
+}
+```
+Response (201 Created):
+{
+"message": "User registered successfully",
+"user": {
+"id": 1,
+"name": "Alice",
+"email": "alice@example.com"
+}
+}
 
- Add /api/users/me secured endpoint
+After register, you will get a jwt token, which can be used to access secured endpoints
 
- Integrate Swagger for API testing
+2️⃣ Login to Get JWT Token
+Endpoint:
+POST /api/auth/login
+Headers:
+Content-Type: application/json
+Body (raw → JSON):
+{
+"email": "alice@example.com",
+"password": "password123"
+}
+Response (200 OK):
+{
+"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6..."
+}
 
+After login, you will get a jwt token, either this token or the one you got while registering can be used to access secured endpoints but prefer using the recent one
+📎 Copy this token — you’ll need it for all protected APIs.
+
+eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJyYWh1bEBleGFtcGxlLmNvbSIsInJvbGUiOiJST0xFX1VTRVIiLCJpYXQiOjE3NjA5NTc0NDMsImV4cCI6MTc2MTA0Mzg0M30.AgVdGrQ7T43dBh1ZoG2qLd1_4e0A84JdnwfW9749f4k
+eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzYWNoaW5AZXhhbXBsZS5jb20iLCJuYW1lIjoiU2FjaGluIiwicm9sZSI6IlJPTEVfVVNFUiIsImlhdCI6MTc2MTAzNTY5MSwiZXhwIjoxNzYxMTIyMDkxfQ.ycVR07opbbhHQrGEpWvAYXjCEX3RKjaviquDmvYsskA
+
+3️⃣ Get Logged-In User (Protected)
+Endpoint:
+GET /api/users/me
+Headers:
+Authorization: Bearer <PASTE_YOUR_TOKEN_HERE>
+Example:
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6...
+Response (200 OK):
+{
+"id": 1,
+"name": "Alice",
+"email": "alice@example.com"
+}
 ✅ Outcome: Register/login users, get and use JWT token for protected routes.
 
+---
 🛒 Weekend 2 – Product Management
- Create Product entity (id, name, description, price, category, stock)
+Create Product entity (id, name, description, price, category, stock)
+Implement ProductRepository, ProductService, ProductController
 
- Implement ProductRepository, ProductService, ProductController
-
- CRUD endpoints:
-
+CRUD endpoints:
 GET /api/products
-
 GET /api/products/{id}
+POST /api/products (admin only)   to be tested
+PUT /api/products/{id}            to be tested
+DELETE /api/products/{id}         to be tested
 
-POST /api/products (admin only)
-
-PUT /api/products/{id}
-
-DELETE /api/products/{id}
-
- Add Role-based Authorization:
-
+Add Role-based Authorization:
 ROLE_USER → read-only
-
 ROLE_ADMIN → full access
 
 ✅ Outcome: Products can be listed and managed securely.
+---
 
-🛍️ Weekend 3 – Cart & Orders
- Create Cart, CartItem, Order, OrderItem entities
+🛍️ Weekend 3 – Cart & Orders  
+Goal: Enable users to add to cart and place orders.
 
- Endpoints:
+Tasks:  
+Create Cart and CartItem entities (User ↔ Products)  
+Create Order and OrderItem entities (User ↔ Products)
 
-POST /api/cart/add
+Endpoints:  
+/api/cart/add (POST)    http://localhost:8080/api/cart/add?productId=1&quantity=2   working
+/api/cart (GET)        JWT token needed   working
+/api/orders/place (POST)    JWT Token needed  working
+/api/orders (GET)  working
 
-GET /api/cart
-
-POST /api/orders/place
-
-GET /api/orders
-
- Handle stock deduction on order placement
-
+Handle transactional updates — stock decreases after order
+Add validations (e.g., product must exist, sufficient stock)
 ✅ Outcome: Users can add products to cart and place orders.
 
+---
 🧑‍💼 Weekend 4 – Admin Dashboard & Reports
  Create admin-only endpoints:
 
 /api/admin/users → list all users
-
 /api/admin/orders → list all orders
-
 /api/admin/stats → total users, total sales, top products
-
  Secure /api/admin/** endpoints for ROLE_ADMIN
 
 ✅ Outcome: Admins can manage users and monitor platform activity.
 
+Status: Weekend 4 done, In dashboard some data like top products was not showing, need to revisit it later
+
+Admin Dashboard Total Orders: 7 Total Users: 8 Total Revenue: 33591.98 Monthly Sales 10: Top Products - - - User Stats Sachin - Orders: 2 Rahul - Orders: 2 Above is the output shown in frontend angular admin dashboard Monthly sales is not showing properly , and below is OrderRepository class, Please check if any change is required, also I remember when you gave me OrderRepository class, you gave this note, what does this mean? Note: MONTH() and YEAR() JPQL functions are supported by many JPA providers but if your provider doesn’t support them, you can use FUNCTION('month', o.orderDate) style or a native query. package com.shankar.springstore.repository; import com.shankar.springstore.dto.MonthlySalesDto; import com.shankar.springstore.dto.TopProductDto; import com.shankar.springstore.dto.UserStatsDto; import com.shankar.springstore.model.Order; import com.shankar.springstore.model.User; import org.springframework.data.jpa.repository.JpaRepository; import org.springframework.data.jpa.repository.Query; import org.springframework.data.repository.query.Param; import java.time.LocalDateTime; import java.util.List; public interface OrderRepository extends JpaRepository<Order, Long> { List<Order> findByUser(User user); @Query("SELECT COUNT(o) FROM Order o") long countAllOrders(); @Query("SELECT COALESCE(SUM(o.totalAmount),0) FROM Order o") double sumAllRevenue(); @Query("SELECT new com.shankar.springstore.dto.MonthlySalesDto(YEAR(o.orderDate), MONTH(o.orderDate), COALESCE(SUM(o.totalAmount),0), COUNT(o)) " + "FROM Order o WHERE o.orderDate >= :from AND o.orderDate <= :to GROUP BY YEAR(o.orderDate), MONTH(o.orderDate) ORDER BY YEAR(o.orderDate), MONTH(o.orderDate)") List<MonthlySalesDto> findMonthlySales(@Param("from") LocalDateTime from, @Param("to") LocalDateTime to); // Top products by quantity sold and revenue @Query("SELECT new com.shankar.springstore.dto.TopProductDto(oi.product.id, oi.product.name, COALESCE(SUM(oi.quantity),0), COALESCE(SUM(oi.price),0)) " + "FROM OrderItem oi WHERE oi.order.orderDate >= :from AND oi.order.orderDate <= :to GROUP BY oi.product.id, oi.product.name ORDER BY SUM(oi.quantity) DESC") List<TopProductDto> findTopProducts(@Param("from") LocalDateTime from, @Param("to") LocalDateTime to); // user stats @Query("SELECT new com.shankar.springstore.dto.UserStatsDto(u.id, u.email, u.name, COUNT(o), COALESCE(SUM(o.totalAmount),0)) " + "FROM Order o JOIN o.user u GROUP BY u.id, u.email, u.name ORDER BY SUM(o.totalAmount) DESC") List<UserStatsDto> findUserStats(); } //Note: MONTH() and YEAR() JPQL functions are supported by many JPA providers but if your provider doesn’t support them, you can use FUNCTION('month', o.orderDate) style or a native query.
+
+---
 ⚙️ Weekend 5 – Polishing & Deployment
  Add DTOs for clean API responses
-
  Implement Global Exception Handling (@ControllerAdvice)
-
  Enable CORS for frontend integration
-
  Dockerize app (Dockerfile, docker-compose.yml)
-
  Deploy to Render / Railway / AWS EC2
 
 ✅ Outcome: Ready-to-deploy, production-grade backend service.
 
+---
 🚀 Future Enhancements
- Product image upload via AWS S3 or Cloudinary
+- Product image upload via AWS S3 or Cloudinary
+- Payment gateway integration (Razorpay Sandbox)
+- Email notification on order
+- React/Angular frontend integration
 
- Payment gateway integration (Razorpay Sandbox)
-
- Email notification on order
-
- React/Angular frontend integration
-
+---
 🧑‍💻 Contributors
-Name	Role
-Shankarlal Sharma	Backend Developer
-[Your Colleague’s Name]	Developer
-[Add More Names]	Contributor
 
-🏁 API Testing
-JWT Auth Flow:
+| Name | Role|
+|------|-----|
+|Shankarlal Sharma|	Backend Developer|
+|[Your Colleague’s Name]|	Developer|
+|[Add More Names]|	Contributor|
 
-Register → POST /api/auth/register
+---
 
-Login → POST /api/auth/login
-
-Copy JWT from login response
-
-Add to headers:
-
-makefile
-Copy code
-Authorization: Bearer <your_token>
-Access secured endpoint /api/users/me
-
-📄 License
-This project is for learning and portfolio purposes.
+📄 License  
+This project is for learning and portfolio purposes.  
 Feel free to fork and experiment 🚀
 
 ⭐ Don’t forget to star the repo if you like it!

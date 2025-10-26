@@ -26,14 +26,20 @@ public class CustomUserDetailsService implements UserDetailsService {
         // Spring Security expects ROLE_ prefix
         var authorities = List.of(new SimpleGrantedAuthority("ROLE_" + u.getRole().name()));
 
+//        return org.springframework.security.core.userdetails.User
+//                .withUsername(u.getEmail())
+//                .password(u.getPassword())
+//                .authorities(authorities)
+//                .accountExpired(false)
+//                .accountLocked(false)
+//                .credentialsExpired(false)
+//                .disabled(false)
+//                .build();
+
         return org.springframework.security.core.userdetails.User
                 .withUsername(u.getEmail())
                 .password(u.getPassword())
-                .authorities(authorities)
-                .accountExpired(false)
-                .accountLocked(false)
-                .credentialsExpired(false)
-                .disabled(false)
+                .roles(u.getRole().name()) // 👈 Automatically adds ROLE_ prefix internally
                 .build();
     }
 }
