@@ -5,6 +5,8 @@ WORKDIR /workspace
 # copy only what we need to cache dependencies
 COPY pom.xml mvnw ./
 COPY .mvn .mvn
+# FIX: give execute permission to mvnw (NECESSARY)
+RUN chmod +x mvnw
 RUN ./mvnw -B -q dependency:go-offline
 
 # copy source & build
