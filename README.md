@@ -1,3 +1,28 @@
+Project status:
+Step 4: done
+Step 5: 5.5 in progress
+    5) Deploy to Render / Railway / AWS EC2: I will be using render for now and later EC2
+
+Notes:
+-> The app is deployed on docker alongwith postgres, so 2 containers
+  - I have the docker compose file
+  - docker-compose up will start, -d option at last can also be used to enable in detach mode
+  - docker-compose down : to stop container
+  - I can go inside postgres with exec to see/modify tables
+    docker exec -it springstore-postgres-1 psql -U springstore -d springstore
+    # \dt: to show tables
+  - http://localhost:8081 for checking adminer postgres console
+    System: PostgreSQL
+    Server: postgres
+    Username: springstore
+    Password: ssp
+    Database: springstore
+-> Next step is to deploy the whole app on render...
+
+Gaps/To learn:
+- Hibernate, OnetoMany, ManyToOne
+
+---
 # springstore
 E-commerce web app using Java, Spring Boot, PostgreSQL
 
@@ -7,13 +32,6 @@ E-commerce web app using Java, Spring Boot, PostgreSQL
 Springstore is a full-featured **shopping backend application** built using **Spring Boot 3**, **PostgreSQL**, and **JWT-based authentication**.  
 It supports **user registration/login**, **product management**, **cart & orders**, and **admin features** — all through secure REST APIs.
 
----
-Completion status:
-- Weekend 2 done
-
-Gaps/To learn again:
-- Hibernate, OnetoMany, ManyToOne
-- 
 ---
 
 ## 🧱 Tech Stack
@@ -191,12 +209,33 @@ Status: Weekend 4 done, In dashboard some data like top products was not showing
 Admin Dashboard Total Orders: 7 Total Users: 8 Total Revenue: 33591.98 Monthly Sales 10: Top Products - - - User Stats Sachin - Orders: 2 Rahul - Orders: 2 Above is the output shown in frontend angular admin dashboard Monthly sales is not showing properly , and below is OrderRepository class, Please check if any change is required, also I remember when you gave me OrderRepository class, you gave this note, what does this mean? Note: MONTH() and YEAR() JPQL functions are supported by many JPA providers but if your provider doesn’t support them, you can use FUNCTION('month', o.orderDate) style or a native query. package com.shankar.springstore.repository; import com.shankar.springstore.dto.MonthlySalesDto; import com.shankar.springstore.dto.TopProductDto; import com.shankar.springstore.dto.UserStatsDto; import com.shankar.springstore.model.Order; import com.shankar.springstore.model.User; import org.springframework.data.jpa.repository.JpaRepository; import org.springframework.data.jpa.repository.Query; import org.springframework.data.repository.query.Param; import java.time.LocalDateTime; import java.util.List; public interface OrderRepository extends JpaRepository<Order, Long> { List<Order> findByUser(User user); @Query("SELECT COUNT(o) FROM Order o") long countAllOrders(); @Query("SELECT COALESCE(SUM(o.totalAmount),0) FROM Order o") double sumAllRevenue(); @Query("SELECT new com.shankar.springstore.dto.MonthlySalesDto(YEAR(o.orderDate), MONTH(o.orderDate), COALESCE(SUM(o.totalAmount),0), COUNT(o)) " + "FROM Order o WHERE o.orderDate >= :from AND o.orderDate <= :to GROUP BY YEAR(o.orderDate), MONTH(o.orderDate) ORDER BY YEAR(o.orderDate), MONTH(o.orderDate)") List<MonthlySalesDto> findMonthlySales(@Param("from") LocalDateTime from, @Param("to") LocalDateTime to); // Top products by quantity sold and revenue @Query("SELECT new com.shankar.springstore.dto.TopProductDto(oi.product.id, oi.product.name, COALESCE(SUM(oi.quantity),0), COALESCE(SUM(oi.price),0)) " + "FROM OrderItem oi WHERE oi.order.orderDate >= :from AND oi.order.orderDate <= :to GROUP BY oi.product.id, oi.product.name ORDER BY SUM(oi.quantity) DESC") List<TopProductDto> findTopProducts(@Param("from") LocalDateTime from, @Param("to") LocalDateTime to); // user stats @Query("SELECT new com.shankar.springstore.dto.UserStatsDto(u.id, u.email, u.name, COUNT(o), COALESCE(SUM(o.totalAmount),0)) " + "FROM Order o JOIN o.user u GROUP BY u.id, u.email, u.name ORDER BY SUM(o.totalAmount) DESC") List<UserStatsDto> findUserStats(); } //Note: MONTH() and YEAR() JPQL functions are supported by many JPA providers but if your provider doesn’t support them, you can use FUNCTION('month', o.orderDate) style or a native query.
 
 ---
-⚙️ Weekend 5 – Polishing & Deployment
- Add DTOs for clean API responses
- Implement Global Exception Handling (@ControllerAdvice)
- Enable CORS for frontend integration
- Dockerize app (Dockerfile, docker-compose.yml)
- Deploy to Render / Railway / AWS EC2
+⚙️ Step 5 – Polishing & Deployment
+ 1) Add DTOs for clean API responses
+ 2) Implement Global Exception Handling (@ControllerAdvice)
+ 3) Enable CORS for frontend integration
+ 4) Dockerize app (Dockerfile, docker-compose.yml)
+ 5) Deploy to Render / Railway / AWS EC2
+
+    4) Dockerize app (Dockerfile, docker-compose.yml):
+    - docker pull openjdk:26-ea-trixie
+    - docker run -it --name rest-demo-setup openjdk:26-ea-trixie bash
+      - ls -a
+    - docker cp target/rest-demo.jar rest-demo-setup:/tmp/rest-demo.jar
+    - docker commit rest-demo-setup rest-demo-image
+    - docker run -d -p 8080:8080 --name rest-demo-container rest-demo-image java -jar /tmp/rest-demo.jar
+    - docker ps
+    - http://localhost:8080
+    
+    Cleanup optional:  //If you ever want to stop and remove it:
+    docker stop rest-demo-container
+    docker rm rest-demo-container
+    docker rmi rest-demo-image
+
+    To automate image creation, we can use Dockerfile
+    refer rest-demo telusko projec for dockerfile
+    after creating dockerfile:
+    > docker build -t telusko/rest-demo:v3 .
+    
 
 ✅ Outcome: Ready-to-deploy, production-grade backend service.
 

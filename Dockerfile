@@ -1,25 +1,30 @@
-# Step 1: Use a lightweight Java image
-FROM eclipse-temurin:17-jdk-alpine
+# ---------- build stage ----------
+FROM maven:3.9.5-eclipse-temurin-17 AS build
+WORKDIR /workspace
 
-# Step 2: Set working directory
+# copy only what we need to cache dependencies
+COPY pom.xml mvnw ./
+COPY .mvn .mvn
+RUN ./mvnw -B -q dependency:go-offline
+
+# copy source & build
+COPY src ./src
+RUN ./mvnw -B -DskipTests package
+
+# ---------- runtime stage ----------
+FROM eclipse-temurin:17-jre-alpine
 WORKDIR /app
 
-# Step 3: Copy Maven build files first for dependency caching
-COPY pom.xml .
-COPY mvnw .
-COPY .mvn .mvn
+# create a non-root user (good practice)
+RUN addgroup -S appgroup && adduser -S appuser -G appgroup
+USER appuser
 
-# Step 4: Download dependencies
-RUN ./mvnw dependency:go-offline
+# copy jar from builder stage (update artifact name if different)
+COPY --from=build /workspace/target/*.jar app.jar
 
-# Step 5: Copy actual source code
-COPY src ./src
+# healthcheck (optional)
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s \
+  CMD wget -qO- --spider http://localhost:8080/actuator/health || exit 1
 
-# Step 6: Package the app
-RUN ./mvnw clean package -DskipTests
-
-# Step 7: Run the jar
-CMD ["java", "-jar", "target/springstore-0.0.1-SNAPSHOT.jar"]
-
-# Step 8: Expose port
 EXPOSE 8080
+ENTRYPOINT ["java","-jar","/app/app.jar"]

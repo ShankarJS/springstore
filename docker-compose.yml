@@ -1,36 +1,58 @@
-version: '3.8'
-
 services:
-  springstore-backend:
-    build: .
-    container_name: springstore-app
-    ports:
-      - "8080:8080"
+  postgres:
+    image: postgres:15
+    restart: unless-stopped
     environment:
-      - SPRING_PROFILES_ACTIVE=prod
-    depends_on:
-      - mysql
+      POSTGRES_DB: springstore
+      POSTGRES_USER: springstore
+      POSTGRES_PASSWORD: springstorepwd
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
     networks:
       - springstore-network
+    healthcheck:
+#      disable: true
+#      test: ["CMD-SHELL", "pg_isready -U springstore -d springstore || exit 1"]
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
-  mysql:
-    image: mysql:8
-    container_name: springstore-db
-    restart: always
+  springstore:
+    build: .
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
     environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: springstore
-      MYSQL_USER: user
-      MYSQL_PASSWORD: password
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/springstore
+      SPRING_DATASOURCE_USERNAME: springstore
+      SPRING_DATASOURCE_PASSWORD: springstorepwd
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_PROFILES_ACTIVE: prod
+      APP_JWT_SECRET: change-me-to-a-long-random-secret
     ports:
-      - "3307:3306"
-    volumes:
-      - mysql-data:/var/lib/mysql
+      - "8080:8080"
+    networks:
+      - springstore-network
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- --spider http://localhost:8080/actuator/health || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+
+  adminer:
+    image: adminer
+    restart: unless-stopped
+    ports:
+      - "8081:8080"
     networks:
       - springstore-network
 
 volumes:
-  mysql-data:
+  pgdata:
 
 networks:
   springstore-network:
