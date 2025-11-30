@@ -240,6 +240,9 @@ Admin Dashboard Total Orders: 7 Total Users: 8 Total Revenue: 33591.98 Monthly S
 ✅ Outcome: Ready-to-deploy, production-grade backend service.
 
 ---
+⚙️ Step 6 – Testing
+- Done, results in C:\Users\shank\OneDrive\Shankar
+---
 🚀 Future Enhancements
 - Product image upload via AWS S3 or Cloudinary
 - Payment gateway integration (Razorpay Sandbox)
@@ -249,16 +252,14 @@ Admin Dashboard Total Orders: 7 Total Users: 8 Total Revenue: 33591.98 Monthly S
 ---
 🧑‍💻 Contributors
 
-| Name | Role|
-|------|-----|
-|Shankarlal Sharma|	Backend Developer|
-|[Your Colleague’s Name]|	Developer|
-|[Add More Names]|	Contributor|
+| Name                    | Role                 |
+|-------------------------|----------------------|
+| Shankar                 | 	Backend Developer  |
+| [Your Colleague’s Name] | 	Developer          |
+| [Add More Names]        | 	Contributor        |
 
 ---
 
 📄 License  
 This project is for learning and portfolio purposes.  
 Feel free to fork and experiment 🚀
-
-⭐ Don’t forget to star the repo if you like it!

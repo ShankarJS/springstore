@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<h2>CORS Test</h2>
+<button onclick="testApi()">Call API</button>
+<p id="result"></p>
+
+<script>
+    function testApi() {
+        fetch("https://springstore-backend.onrender.com/api/products")
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById("result").innerHTML =
+                   "SUCCESS! Received " + data.length + " products.";
+                console.log(data);
+            })
+            .catch(err => {
+                document.getElementById("result").innerHTML =
+                   "FAILED! CORS error. Check console.";
+                console.error(err);
+            });
+    }
+</script>
+
+</body>
+</html>
