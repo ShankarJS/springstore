@@ -72,7 +72,11 @@ Feel free to fork and experiment
 ## Message for frontend Developer   
 📌 What you need to build Springstore frontend  
 Backend base URL: https://springstore-backend.onrender.com  
-You will use these APIs:  
+
+Swagger:  
+https://springstore-backend.onrender.com/swagger-ui.html
+
+You will use these APIs:    
 ### Auth  
 POST /api/auth/login  
 POST /api/auth/register 
