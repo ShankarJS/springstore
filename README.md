@@ -75,13 +75,14 @@ Backend base URL: https://springstore-backend.onrender.com
 You will use these APIs:  
 ### Auth  
 POST /api/auth/login  
-POST /api/auth/register  
+POST /api/auth/register 
+
 ### Products  
 GET /api/products  
-GET /api/products/:id
-POST /api/products (admin)
-PUT /api/products/:id (admin)
-DELETE /api/products/:id (admin)
+GET /api/products/:id  
+POST /api/products (admin)  
+PUT /api/products/:id (admin)  
+DELETE /api/products/:id (admin)  
 
 ### Orders  
 POST /api/orders  
