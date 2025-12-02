@@ -1,30 +1,10 @@
-# Notes:
-  - The app is deployed on docker alongwith postgres, so 2 containers
-  - I have the docker compose file
-  - docker-compose up will start, -d option at last can also be used to enable in detach mode
-  - docker-compose down : to stop container
-  - I can go inside postgres with exec to see/modify tables
-    docker exec -it springstore-postgres-1 psql -U springstore -d springstore  
-    \dt: to show tables
-  - http://localhost:8081 for checking adminer postgres console
-    System: PostgreSQL
-    Server: postgres
-    Username: springstore
-    Password: ssp
-    Database: springstore
+# Springstore -  Shopping Application
 
-## Gaps/To learn:
-- Hibernate, OnetoMany, ManyToOne
-
----
-
-# Springstore — Shopping Application (Java + Spring Boot)
+### Note: Its only backend restapi, frontend to be build and is in progress
 
 ## Overview
 Springstore is a full-featured **shopping backend application** built using **Spring Boot 3**, **PostgreSQL**, and **JWT-based authentication**.  
 It supports **user registration/login**, **product management**, **cart & orders**, and **admin features** — all through secure REST APIs.
-
----
 
 ## Tech Stack
 
@@ -71,7 +51,25 @@ This project is for learning and portfolio purposes.
 Feel free to fork and experiment
 
 ---
-Message for frontend Developer   
+# Notes:
+- The app is deployed on docker alongwith postgres, so 2 containers
+- I have the docker compose file
+- docker-compose up will start, -d option at last can also be used to enable in detach mode
+- docker-compose down : to stop container
+- I can go inside postgres with exec to see/modify tables
+  docker exec -it springstore-postgres-1 psql -U springstore -d springstore  
+  \dt: to show tables
+- http://localhost:8081 for checking adminer postgres console
+  System: PostgreSQL
+  Server: postgres
+  Username: springstore
+  Password: ssp
+  Database: springstore
+
+## Gaps/To learn:
+- Hibernate, OnetoMany, ManyToOne
+---
+## Message for frontend Developer   
 📌 What you need to build Springstore frontend  
 Backend base URL: https://springstore-backend.onrender.com  
 You will use these APIs:  
