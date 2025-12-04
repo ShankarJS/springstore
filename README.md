@@ -89,7 +89,7 @@ PUT /api/products/:id (admin)
 DELETE /api/products/:id (admin)  
 
 ### Orders  
-POST /api/orders  
+POST /api/orders/place  
 GET /api/orders  
 GET /api/orders/:id  
 
