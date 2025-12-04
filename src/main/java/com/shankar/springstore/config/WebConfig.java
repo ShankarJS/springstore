@@ -11,7 +11,8 @@ public class WebConfig implements WebMvcConfigurer {
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")   // allow all endpoints
                 .allowedOrigins("http://localhost:4200", // Angular URL
-                        "http://localhost:3000")  //React URL
+                        "http://localhost:3000", //React URL
+                        "https://springstore-frontend.vercel.app")  //Vercel Url
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                 .allowedHeaders("*")
                 .allowCredentials(true);
