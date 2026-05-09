@@ -11,11 +11,14 @@ It supports **user registration/login**, **product management**, **cart & orders
 - Layer-Technology   
 - Spring boot 3.5.x   
 - Java 17   
-- Postgresql   
+- Postgresql 15  
 - Spring Security + JWT   
 - Swagger/Springdoc OpenAPI  
 - ORM: Spring Data JPA + Hibernate  
 - Maven
+- Backend Deployed on render
+- DB deployed on neon
+- Frontend(react) deployed on vercel: https://springstore-frontend.vercel.app/
 ---
 ## Project Setup
 ### 1. Clone the repository
